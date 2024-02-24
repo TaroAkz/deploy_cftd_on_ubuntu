@@ -4,11 +4,10 @@
 
 ### Clone CTFd Repository: First, clone the CTFd repository from GitHub.
 ```bash
-Copy code
 git clone https://github.com/CTFd/CTFd.git
+```
 Install Required Packages: Install required packages using pip.
-bash
-Copy code
+```bash
 cd CTFd
 pip install -r requirements.txt
 ```
@@ -18,7 +17,6 @@ Configure CTFd as per your requirements. This includes setting up the database a
 ### Setup Gunicorn: Install Gunicorn using pip.
 
 ```bash
-Copy code
 pip install gunicorn
 ```
 Run Gunicorn: Run Gunicorn to serve the CTFd application.
