@@ -59,6 +59,14 @@ sudo apt update
 sudo apt install apache2
 sudo a2enmod proxy proxy_http headers rewrite ssl
 ```
+Save the file and run:
+
+```
+sudo systemctl daemon-reload
+sudo systemctl enable ctfd
+sudo systemctl start ctfd
+```
+
 Create Apache2 Config: Create a new Apache2 configuration file for CTFd.
 ```bash
 sudo nano /etc/apache2/sites-available/ctfd.conf
