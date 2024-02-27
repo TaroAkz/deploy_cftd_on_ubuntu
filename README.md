@@ -57,7 +57,7 @@ Configure Apache2: Install Apache2 and enable the required modules.
 ```bash 
 sudo apt update
 sudo apt install apache2
-sudo a2enmod proxy proxy_http headers rewrite
+sudo a2enmod proxy proxy_http headers rewrite ssl
 ```
 Create Apache2 Config: Create a new Apache2 configuration file for CTFd.
 ```bash
@@ -94,7 +94,7 @@ sudo nano /etc/apache2/sites-available/ctfd.conf
 
 Add below HTTP in the VirtualHost section with:
 ```
-<VirtualHost *:443>
+<VirtualHost _default_:443>
     ServerName <your_domain>
     SSLEngine on
     SSLCertificateFile /path/to/ctfd.crt
@@ -102,6 +102,33 @@ Add below HTTP in the VirtualHost section with:
     ProxyPreserveHost On
     ProxyPass / http://127.0.0.1:8000/
     ProxyPassReverse / http://127.0.0.1:8000/
+    RewriteEngine On
+    RewriteCond %{HTTPS} off
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</VirtualHost>
+```
+Apache2 RedirectPermanent to all Requests HTTP and Respond with HTTPS
+
+```bash
+sudo nano /etc/apache2/sites-available/ctfd.conf
+```
+```
+<VirtualHost *:80>
+    ServerName <your_domain>
+    Redirect permanent / https://<your_domain>/
+</VirtualHost>
+
+
+<VirtualHost _default_:443>
+    ServerName mkr.cadt.com
+    SSLEngine On
+    SSLCertificateFile /home/mkr/Documents/CTFd/openssl/ctfd.crt
+    SSLCertificateKeyFile /home/mkr/Documents/CTFd/openssl/ctfd.key
+
+    ProxyPreserveHost On
+    ProxyPass / http://127.0.0.1:8000/
+    ProxyPassReverse / http://127.0.0.1:8000/
+
     RewriteEngine On
     RewriteCond %{HTTPS} off
     RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
