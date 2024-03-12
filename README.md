@@ -105,8 +105,8 @@ Add below HTTP in the VirtualHost section with:
 <VirtualHost _default_:443>
     ServerName <your_domain>
     SSLEngine on
-    SSLCertificateFile /path/to/ctfd.crt
-    SSLCertificateKeyFile /path/to/ctfd.key
+    SSLCertificateFile /path/to/CTFd/openssl/ctfd.crt
+    SSLCertificateKeyFile /path/to/CTFd/openssl/ctfd.key
     ProxyPreserveHost On
     ProxyPass / http://127.0.0.1:8000/
     ProxyPassReverse / http://127.0.0.1:8000/
