@@ -53,7 +53,7 @@ WantedBy=multi-user.target
 
 Save the file and run:
 
-```
+```bash
 sudo systemctl daemon-reload
 sudo systemctl enable ctfd
 sudo systemctl start ctfd
@@ -101,7 +101,7 @@ sudo nano /etc/apache2/sites-available/ctfd.conf
 ```
 
 Add below HTTP in the VirtualHost section with:
-```
+```bash
 <VirtualHost _default_:443>
     ServerName <your_domain>
     SSLEngine on
@@ -120,7 +120,7 @@ Apache2 RedirectPermanent to all Requests HTTP and Respond with HTTPS by Followi
 ```bash
 sudo nano /etc/apache2/sites-available/ctfd.conf
 ```
-```
+```bash
 <VirtualHost *:80>
     ServerName <your_domain>
     Redirect permanent / https://<your_domain>/
@@ -145,7 +145,7 @@ sudo nano /etc/apache2/sites-available/ctfd.conf
 
 Restart Apache2 and access your CTFd instance using HTTPS:
 
-```
+```bash
 sudo systemctl restart apache2
 ```
 
@@ -153,11 +153,11 @@ Now, Apache2 should be proxying requests to Gunicorn, which is serving the CTFd 
 
 ### Testing Domain in Local
 
-```
+```bash
 sudo nano /etc/hosts
 ```
 
-```
+```bash
 127.0.0.1       localhost
 127.0.1.1       taro-VirtualBox
 #Add your configure here
