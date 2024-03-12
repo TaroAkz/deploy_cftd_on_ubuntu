@@ -1,5 +1,11 @@
 # deploy_cftd_on_ubuntu
 
+## Install Package Requirement. 
+
+```bash
+sudo apt install git python3-pip gunicorn openssl -y
+```
+
 ## Deploy CTFd with Gunicorn + Apache2 on Ubuntu. 
 
 ### Clone CTFd Repository: First, clone the CTFd repository from GitHub.
@@ -14,15 +20,7 @@ pip install -r requirements.txt
 ### Configure CTFd: (Optional)
 Configure CTFd as per your requirements. This includes setting up the database and other settings in CTFd/config.py  
 
-### Setup Gunicorn: Install Gunicorn using pip.
-
-```bash
-pip install gunicorn
-```
-or install directly:
-```bash
-sudo apt install gunicorn
-```
+### Setup Gunicorn.
 
 Run Gunicorn: Run Gunicorn to serve the CTFd application.
 
@@ -44,7 +42,7 @@ After=network.target
 [Service]
 User=<your_username>
 Group=<your_username>
-WorkingDirectory=/home/<your_username>/CTFd
+WorkingDirectory=/path/to/CTFd
 Environment="PYTHONUNBUFFERED=1"
 ExecStart=/usr/bin/gunicorn 'CTFd:create_app()' -b 127.0.0.1:8000
 Restart=always
@@ -53,18 +51,19 @@ Restart=always
 WantedBy=multi-user.target
 ```
 
-Configure Apache2: Install Apache2 and enable the required modules.
-```bash 
-sudo apt update
-sudo apt install apache2
-sudo a2enmod proxy proxy_http headers rewrite ssl
-```
 Save the file and run:
 
 ```
 sudo systemctl daemon-reload
 sudo systemctl enable ctfd
 sudo systemctl start ctfd
+```
+
+Configure Apache2: Install Apache2 and enable the required modules.
+```bash 
+sudo apt install apache2
+sudo a2enmod proxy proxy_http headers rewrite ssl
+sudo systemctl restart apache2
 ```
 
 Create Apache2 Config: Create a new Apache2 configuration file for CTFd.
@@ -90,11 +89,12 @@ sudo systemctl restart apache2
 ## Create a self-certificate:
 
 ```bash 
-sudo apt install openssl
+mkdir openssl
+cd openssl
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ctfd.key -out ctfd.crt
 ```
 
-Configure Apache2 for HTTPS:
+### Configure Apache2 for HTTPS:
 
 ```bash
 sudo nano /etc/apache2/sites-available/ctfd.conf
@@ -115,7 +115,7 @@ Add below HTTP in the VirtualHost section with:
     RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 </VirtualHost>
 ```
-Apache2 RedirectPermanent to all Requests HTTP and Respond with HTTPS
+Apache2 RedirectPermanent to all Requests HTTP and Respond with HTTPS by Following this configuration
 
 ```bash
 sudo nano /etc/apache2/sites-available/ctfd.conf
@@ -128,10 +128,10 @@ sudo nano /etc/apache2/sites-available/ctfd.conf
 
 
 <VirtualHost _default_:443>
-    ServerName mkr.cadt.com
+    ServerName <your_domain>
     SSLEngine On
-    SSLCertificateFile /home/mkr/Documents/CTFd/openssl/ctfd.crt
-    SSLCertificateKeyFile /home/mkr/Documents/CTFd/openssl/ctfd.key
+    SSLCertificateFile /path/to/CTFd/openssl/ctfd.crt
+    SSLCertificateKeyFile /path/to/CTFd/openssl/ctfd.key
 
     ProxyPreserveHost On
     ProxyPass / http://127.0.0.1:8000/
@@ -150,3 +150,23 @@ sudo systemctl restart apache2
 ```
 
 Now, Apache2 should be proxying requests to Gunicorn, which is serving the CTFd application.
+
+### Testing Domain in Local
+
+```
+sudo nano /etc/hosts
+```
+
+```
+127.0.0.1       localhost
+127.0.1.1       taro-VirtualBox
+#Add your configure here
+<IP Address>  <your_domain>
+
+# The following lines are desirable for IPv6 capable hosts
+::1     ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+```
