@@ -61,7 +61,7 @@ sudo systemctl start ctfd
 
 Configure Apache2: Install Apache2 and enable the required modules.
 ```bash 
-sudo apt install apache2
+sudo apt install apache2 -y
 sudo a2enmod proxy proxy_http headers rewrite ssl
 sudo systemctl restart apache2
 ```
