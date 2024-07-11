@@ -42,7 +42,7 @@ After=network.target
 [Service]
 User=<your_username>
 Group=<your_username>
-WorkingDirectory=/path/to/CTFd
+WorkingDirectory=/path/to/CTFd/
 Environment="PYTHONUNBUFFERED=1"
 ExecStart=/usr/bin/gunicorn 'CTFd:create_app()' -b 127.0.0.1:8000
 Restart=always
